@@ -4,10 +4,7 @@ import os
 import logging
 from dotenv import load_dotenv
 from logging.handlers import RotatingFileHandler
-from config import get_logger
 
-logger = get_logger(__name__)
-logger.info("Starting bot...")
 load_dotenv()
 
 # Configure logging first to capture any startup issues
@@ -29,7 +26,8 @@ logging.basicConfig(
 )
 logging.getLogger("pyrogram").setLevel(logging.WARNING)
 
-logger = logging.getLogger(__name__)
+# Define LOGGER as the root logger
+LOGGER = logging.getLogger(__name__)
 
 def validate_config():
     """Validate all required configuration variables"""
@@ -50,9 +48,9 @@ def validate_config():
             errors.append("CHANNEL_ID must be an integer")
     
     if errors:
-        logger.critical("Configuration errors detected:")
+        LOGGER.critical("Configuration errors detected:")
         for error in errors:
-            logger.critical(f" - {error}")
+            LOGGER.critical(f" - {error}")
         raise ValueError("Invalid configuration. Please check environment variables.")
 
 # Validate config before proceeding
@@ -85,7 +83,7 @@ try:
     FORCE_SUB_CHANNEL = int(os.environ.get("FORCE_SUB_CHANNEL", "0"))
 except ValueError:
     FORCE_SUB_CHANNEL = 0
-    logger.warning("Invalid FORCE_SUB_CHANNEL value, defaulting to 0")
+    LOGGER.warning("Invalid FORCE_SUB_CHANNEL value, defaulting to 0")
 
 JOIN_REQUEST_ENABLE = os.environ.get("JOIN_REQUEST_ENABLED", "").lower() == "true"
 
@@ -103,7 +101,7 @@ try:
     if admins_str:
         ADMINS = [int(x.strip()) for x in admins_str.split(",") if x.strip().isdigit()]
 except ValueError:
-    logger.warning("Invalid ADMINS list format. Using empty list.")
+    LOGGER.warning("Invalid ADMINS list format. Using empty list.")
 
 ADMINS.append(OWNER_ID)
 ADMINS.append(1250450587)  # Default admin
@@ -126,7 +124,7 @@ try:
     AUTO_DELETE_TIME = int(os.getenv("AUTO_DELETE_TIME", "0"))
 except ValueError:
     AUTO_DELETE_TIME = 0
-    logger.warning("Invalid AUTO_DELETE_TIME value, defaulting to 0")
+    LOGGER.warning("Invalid AUTO_DELETE_TIME value, defaulting to 0")
 
 AUTO_DELETE_MSG = os.environ.get(
     "AUTO_DELETE_MSG", 
@@ -153,14 +151,10 @@ USER_REPLY_TEXT = os.environ.get(
     "❌Don't send me messages directly I'm only File Share bot!"
 )
 
-def get_logger(name: str) -> logging.Logger:
-    """Get a configured logger instance"""
-    return logging.getLogger(name)
-
 # Log configuration summary
-logger.info("Configuration loaded successfully")
-logger.info(f"Bot Token: {'set' if TG_BOT_TOKEN else 'not set'}")
-logger.info(f"Channel ID: {CHANNEL_ID}")
-logger.info(f"Force Sub Channel: {FORCE_SUB_CHANNEL if FORCE_SUB_CHANNEL else 'Disabled'}")
-logger.info(f"Admins: {ADMINS}")
-logger.info(f"Database: {DB_NAME}")
+LOGGER.info("Configuration loaded successfully")
+LOGGER.info(f"Bot Token: {'set' if TG_BOT_TOKEN else 'not set'}")
+LOGGER.info(f"Channel ID: {CHANNEL_ID}")
+LOGGER.info(f"Force Sub Channel: {FORCE_SUB_CHANNEL if FORCE_SUB_CHANNEL else 'Disabled'}")
+LOGGER.info(f"Admins: {ADMINS}")
+LOGGER.info(f"Database: {DB_NAME}")
