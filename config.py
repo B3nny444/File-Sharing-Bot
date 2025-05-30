@@ -97,7 +97,7 @@ START_MSG = os.environ.get("START_MESSAGE", "Hello {first}\n\nI can store privat
 # Admins list
 ADMINS = []
 try:
-    admins_str = os.environ.get("ADMINS", "7190881436")
+    admins_str = os.environ.get("ADMINS", "")
     if admins_str:
         ADMINS = [int(x.strip()) for x in admins_str.split(",") if x.strip().isdigit()]
 except ValueError:
